@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: abolea <abolea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/11 13:48:46 by abolea            #+#    #+#             */
-/*   Updated: 2023/12/12 14:47:44 by abolea           ###   ########.fr       */
+/*   Created: 2023/12/14 16:29:35 by abolea            #+#    #+#             */
+/*   Updated: 2023/12/14 17:47:41 by abolea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,19 +18,13 @@
 # include <stdlib.h>
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 5
+#  define BUFFER_SIZE 42
 # endif
 
-char            *get_next_line(int fd);
-static int        endline_checker(char    *buff);
-char    *ft_strjoin(char *s1, char* s2);
-char            *ft_strdup(char *s);
-size_t     ft_strlen(char *s);
-char        *ft_substr(char *s, unsigned int start, unsigned int len);
-char            *ft_strchr(const char *s, int c);
-static	int     tmp_len(char *tmp);
-char			*get_all(int fd, char *buff, char *res);
-char *get_next_backline(int fd, char *buff,char *res, char *static_str);
-char *get_before_backline(int fd, char *buff, char *res, char *static_str);
+int	buff_checker(char *buff);
+char *get_next_line(int fd);
+void	*ft_memcpy(void *dest, const void *src);
+size_t	ft_strlen(const char *s);
+char	*ft_strjoin(char *s1, char *s2);
 
 #endif
