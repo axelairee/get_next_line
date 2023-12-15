@@ -6,7 +6,7 @@
 /*   By: abolea <abolea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/14 16:28:50 by abolea            #+#    #+#             */
-/*   Updated: 2023/12/14 17:20:26 by abolea           ###   ########.fr       */
+/*   Updated: 2023/12/15 17:22:36 by abolea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,16 +55,16 @@ char	*ft_strjoin(char *s1, char *s2)
 	len_s1 = ft_strlen(s1);
 	len_s2 = ft_strlen(s2);
 	if (!s1 && !s2)
-		return (NULL);
+		return (free(s1), NULL);
 	s3 = malloc((len_s1 + len_s2 + 1) * sizeof(char));
 	if (!s3)
-		return (NULL);
+		return (free(s1),NULL);
 	while (i < len_s1)
 	{
 		s3[i] = s1[i];
 		i++;
 	}
-	while (j < len_s2 && s2[j - 1] != '\n')
+	while (s2[j] && s2[j - 1] != '\n')
 		s3[i++] = s2[j++];
 	s3[i] = '\0';
 	free(s1);
