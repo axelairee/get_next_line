@@ -6,7 +6,7 @@
 /*   By: abolea <abolea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/14 16:28:50 by abolea            #+#    #+#             */
-/*   Updated: 2023/12/15 17:22:36 by abolea           ###   ########.fr       */
+/*   Updated: 2023/12/18 12:52:32 by abolea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ char	*ft_strjoin(char *s1, char *s2)
 	char		*s3;
 	size_t		i;
 	size_t		j;
-	size_t		len_s2;
 	size_t		len_s1;
+	size_t		len_s2;
 
 	i = 0;
 	j = 0;
