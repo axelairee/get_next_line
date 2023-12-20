@@ -3,84 +3,70 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abolea <abolea@student.42.fr>              +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/14 13:26:55 by abolea            #+#    #+#             */
-/*   Updated: 2023/12/18 16:35:40 by abolea           ###   ########.fr       */
+/*   Created: 2023/12/07 15:14:36 by rasamad           #+#    #+#             */
+/*   Updated: 2023/12/20 12:05:27 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int	buff_checker2(char *buff)
-{
-	int	i;
-
-	i = 0;
-	while (i < BUFFER_SIZE)
-	{
-		if (buff[i] == '\n')
-			return (i);
-		else if (buff[i] == '\0')
-			return (-1);
-		i++;
-	}
-	return (i);
-}
-
-int	buff_checker(char *buff)
-{
-	int	i;
-
-	i = 0;
-	while (i < BUFFER_SIZE)
-	{
-		if (buff[i] == '\n' || buff[i] == '\0')
-			return (i);
-		i++;
-	}
-	return (i);
-}
-
 char *get_next_line(int fd)
 {
 	static char buff[BUFFER_SIZE + 1] = "\0";
-	char *line;
 	int check_read;
+	char *line;
 	static int check_buff = 0;
-
-	line = NULL;
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, NULL, 0) < 0)
-		return (free(line), NULL);
+	
 	line = malloc(1 * sizeof(char));
-	if (!line)
-		return (free(line),NULL);
-	line[0] = '\0';
-	if (buff_checker2(buff) == -1 && buff[0] != 0)
-		return(free(line), NULL);
+	if (fd < 0 || BUFFER_SIZE <= 0 || !line)
+		return (NULL);
+	line[0] = 0;
 	if (buff[0] != 0)
 	{
-		check_buff = buff_checker(buff);
-		ft_memcpy(buff + 0, buff + check_buff + 1);
+		ft_memcpy(buff + 0, buff + ft_check_buff2(buff));
 		line = ft_strjoin(line, buff);
-		check_buff = buff_checker(buff);
-		if (buff[check_buff] == '\n' /*|| buff[check] == '\0'*/)
+		check_buff = ft_check_buff(buff);
+		if (buff[check_buff] == '\n')
 			return (line);
 	}
 	check_read = read(fd, buff, BUFFER_SIZE);
-	if (check_read < 0)
-		return (free(line), NULL);
 	buff[check_read] = 0;
-	check_buff = buff_checker(buff);
-	line = print_line(buff, line, fd, check_read, check_buff);
+	if (verif_read(line, buff, check_buff, check_read) != NULL)
+		check_buff = (int)verif_read(line, buff, check_buff, check_read);
+	else
+		return (free(line),NULL);
+	line = print_line(line, buff, check_buff, fd);
 	return (line);
 }
 
-
-char *print_line(char *buff, char *line, int fd, int check_read, int check_buff)
+void *verif_read(char *line, char *buff, int check_buff, int check_read)
 {
-	if (check_read == 0 && buff[0] == '\0')
-		return (free(line), NULL);
+    if (check_read < 0)
+    {
+        ft_bzero(buff, 1);
+        free(line);
+        return((char *)NULL);
+    }
+    
+    if (check_read <= 0)
+    {
+        free(line);
+        return((char *)NULL);
+    }
+    else
+    {
+        check_buff = ft_check_buff(buff);
+        return ((void *)check_buff);
+    }
+}
+
+char *print_line(char *line, char *buff, int check_buff, int fd)
+{
+	int check_read;
+
+	check_read = 0;
 	if (check_buff < BUFFER_SIZE)
 		line = ft_strjoin(line, buff);
 	else
@@ -90,55 +76,72 @@ char *print_line(char *buff, char *line, int fd, int check_read, int check_buff)
 			line = ft_strjoin(line, buff);
 			check_read = read(fd, buff, BUFFER_SIZE);
 			buff[check_read] = 0;
-			if (check_read == -1)
-				return (free(line), NULL);
-			check_buff = buff_checker(buff);
+			check_buff = ft_check_buff(buff);
 		}
 		line = ft_strjoin(line, buff);
 	}
-	return (line);	
+	return (line);
 }
-/*
-#include <stdio.h>
-int	main()
-{
-	int fd;
-	
-	fd = open("gnl.txt", O_RDONLY);
-	int i = 0;
-	while (i < 10)
-	{
-		printf("%s", get_next_line(fd));
-		i++;
-	}
-	close(fd);
-	return (0);
-}*/
-/*
+
 #include <stdio.h>
 int main()
 {
+	int fd = open("gnl.txt", O_RDONLY);
+	if (fd == -1)
+	{
+		perror("Erreur lors de l'ouverture du fichier");
+		return 1;
+	}
+	char* line;
+	line = get_next_line(fd);
+	printf("%s", line);
+	free(line);
+	line = get_next_line(fd);
+	printf("%s", line);
+	free(line);
+	//printf("%s", get_next_line(fd));
+	//printf("%s", get_next_line(fd));
+	//char *line;
+	//printf("line = |%s|\n", line);
+	// free(line);
+	// line = get_next_line(fd);
+	// printf("line = |%s|\n", line);
+	int i = 0;
+	while (i < 9)
+	{
+		// Traitement de la ligne ici
+		line = get_next_line(fd);
+		printf("%s", line);
+		free(line);
+		i++;
+		// Libérer la mémoire allouée pour chaque ligne
+	}
+
+	free(line);
+	close(fd);
+	return 0;
+}
+
+/*int    main(void)
+{
     int fd = open("gnl.txt", O_RDONLY);
-    if (fd == -1) {
-        perror("Erreur lors de l'ouverture du fichier");
-        return 1;
+    char    *str;
+    int    lines = 0;
+    int    i = 0;
+    
+    while(lines < 4)
+    {
+        if (i == 2)
+            fd++;
+        if (i == 3)
+        {
+            close(fd);
+            fd = open("gnl.txt", O_RDONLY);
+        }
+        str = get_next_line(fd);
+        printf ("%s", str);
+        free(str);
+        lines++;
+        i++;
     }
-    // printf("line = |%s|\n", get_next_line(fd));
-      char *line;
-    // printf("line = |%s|\n", line);
-    // free(line);
-    // line = get_next_line(fd);
-    // printf("line = |%s|\n", line);
-
-
-    while ((line = get_next_line(fd)) != NULL) {
-        // Traitement de la ligne ici
-        printf("%s", line);
-        free(line);
-        // Libérer la mémoire allouée pour chaque ligne
-     }
-    printf("%s", line);
-    free(line);
-    close(fd);
-    return 0;
 }*/

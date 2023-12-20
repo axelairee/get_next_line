@@ -3,70 +3,109 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abolea <abolea@student.42.fr>              +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/14 16:28:50 by abolea            #+#    #+#             */
-/*   Updated: 2023/12/18 12:52:32 by abolea           ###   ########.fr       */
+/*   Created: 2023/12/10 15:38:58 by rasamad           #+#    #+#             */
+/*   Updated: 2023/12/20 11:43:16 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "get_next_line.h"
 
-void	*ft_memcpy(void *dest, const void *src)
-{
-	size_t			i;
-	char			*tmp1;
-	char			*tmp2;
 
+void	ft_bzero(void *s, size_t n)
+{
+	char	*temp;
+	size_t	i;
+
+	temp = (char *)s;
 	i = 0;
-	tmp1 = (char *)dest;
-	tmp2 = (char *)src;
-	if ((char *)dest == NULL && (char *)src == NULL)
-		return (NULL);
-	while (tmp2[i])
+	while (i < n)
 	{
-		tmp1[i] = tmp2[i];
+		temp[i] = '\0';
 		i++;
 	}
-	tmp1[i] = '\0';
-	return (dest);
 }
 
-size_t	ft_strlen(const char *s)
+size_t	ft_strlen(char *s)
 {
-	size_t	i;
+	int i;
 
 	i = 0;
 	while (s[i])
 		i++;
-	return (i);
+	return (i);	
 }
+
+char	*ft_memcpy(char *dst, char *src)
+{
+	int	i;
+
+	if (dst == NULL && src == NULL)
+		return (NULL);
+	i = 0;
+	while (src[i] != 0)
+	{
+		dst[i] = src[i];
+		i++;
+	}
+	dst[i] = 0;
+	return (dst);
+}
+
 
 char	*ft_strjoin(char *s1, char *s2)
 {
-	char		*s3;
-	size_t		i;
-	size_t		j;
-	size_t		len_s1;
-	size_t		len_s2;
-
-	i = 0;
-	j = 0;
+	int		len_s1;
+	int		len_s2;
+	int		i;
+	char	*tmp;
+	
 	len_s1 = ft_strlen(s1);
 	len_s2 = ft_strlen(s2);
-	if (!s1 && !s2)
+	i = 0;
+	tmp = malloc((len_s1 + len_s2 + 1) * sizeof(char));
+	if (!tmp)
 		return (free(s1), NULL);
-	s3 = malloc((len_s1 + len_s2 + 1) * sizeof(char));
-	if (!s3)
-		return (free(s1),NULL);
 	while (i < len_s1)
 	{
-		s3[i] = s1[i];
+		tmp[i] = s1[i];
 		i++;
 	}
-	while (s2[j] && s2[j - 1] != '\n')
-		s3[i++] = s2[j++];
-	s3[i] = '\0';
+	i = 0;
+	while (s2[i] && s2[i-1] != '\n')
+	{
+		tmp[len_s1 + i] = s2[i];
+		i++;	
+	}
+	tmp[len_s1 + i] = 0;
 	free(s1);
-	return (s3);
+	return (tmp);
+}
+
+int		ft_check_buff(char *buff)
+{
+	size_t i = 0;
+	
+	while (i < BUFFER_SIZE)
+	{
+		if(buff[i] == '\n' || buff[i] == '\0')
+			return(i);
+		i++;
+	}
+	return(i);
+}
+
+int		ft_check_buff2(char *buff)
+{
+	size_t i = 0;
+	
+	while (i < BUFFER_SIZE)
+	{
+		if(buff[i] == '\n')
+			return(i + 1);
+		i++;
+	}
+	return(i);
 }
