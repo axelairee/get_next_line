@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: abolea <abolea@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/10 15:38:58 by rasamad           #+#    #+#             */
-/*   Updated: 2023/12/20 11:43:16 by marvin           ###   ########.fr       */
+/*   Created: 2023/12/20 22:00:18 by abolea            #+#    #+#             */
+/*   Updated: 2023/12/20 22:00:31 by abolea           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "get_next_line.h"
-
 
 void	ft_bzero(void *s, size_t n)
 {
@@ -30,12 +28,16 @@ void	ft_bzero(void *s, size_t n)
 
 size_t	ft_strlen(char *s)
 {
-	int i;
+	size_t	i;
 
 	i = 0;
 	while (s[i])
+	{
+		if (s[i] == '\n')
+			return (i + 1);
 		i++;
-	return (i);	
+	}
+	return (i);
 }
 
 char	*ft_memcpy(char *dst, char *src)
@@ -54,58 +56,48 @@ char	*ft_memcpy(char *dst, char *src)
 	return (dst);
 }
 
-
-char	*ft_strjoin(char *s1, char *s2)
+char	*ft_strdup(char *s)
 {
-	int		len_s1;
-	int		len_s2;
-	int		i;
+	size_t	j;
 	char	*tmp;
-	
-	len_s1 = ft_strlen(s1);
-	len_s2 = ft_strlen(s2);
-	i = 0;
-	tmp = malloc((len_s1 + len_s2 + 1) * sizeof(char));
+
+	j = 0;
+	if (!s)
+		return (NULL);
+	tmp = malloc(sizeof(char) * (ft_strlen(s) + 1));
 	if (!tmp)
-		return (free(s1), NULL);
-	while (i < len_s1)
+		return (NULL);
+	while (j < ft_strlen(s) && s[j])
 	{
-		tmp[i] = s1[i];
-		i++;
+		tmp[j] = s[j];
+		j++;
 	}
+	tmp[j] = '\0';
+	return ((char *)tmp);
+}
+
+int	ft_check_buff(char *buff, int choice)
+{
+	size_t	i;
+
 	i = 0;
-	while (s2[i] && s2[i-1] != '\n')
+	if (choice == 1)
 	{
-		tmp[len_s1 + i] = s2[i];
-		i++;	
+		while (i < BUFFER_SIZE)
+		{
+			if (buff[i] == '\n' || buff[i] == '\0')
+				return (i);
+			i++;
+		}
 	}
-	tmp[len_s1 + i] = 0;
-	free(s1);
-	return (tmp);
-}
-
-int		ft_check_buff(char *buff)
-{
-	size_t i = 0;
-	
-	while (i < BUFFER_SIZE)
+	if (choice == 2)
 	{
-		if(buff[i] == '\n' || buff[i] == '\0')
-			return(i);
-		i++;
+		while (i < BUFFER_SIZE)
+		{
+			if (buff[i] == '\n')
+				return (i + 1);
+			i++;
+		}
 	}
-	return(i);
-}
-
-int		ft_check_buff2(char *buff)
-{
-	size_t i = 0;
-	
-	while (i < BUFFER_SIZE)
-	{
-		if(buff[i] == '\n')
-			return(i + 1);
-		i++;
-	}
-	return(i);
+	return (i);
 }
