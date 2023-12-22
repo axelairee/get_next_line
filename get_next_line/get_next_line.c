@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: abolea <abolea@student.42.fr>              +#+  +:+       +#+        */
+/*   By: famillebolea <famillebolea@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/20 21:59:51 by abolea            #+#    #+#             */
-/*   Updated: 2023/12/20 22:00:36 by abolea           ###   ########.fr       */
+/*   Updated: 2023/12/22 19:24:49 by famillebole      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ char	*get_next_line(int fd)
 	{
 		ft_memcpy(buff + 0, buff + ft_check_buff(buff, 2));
 		line = ft_strjoin(line, buff);
+		if (!line)
+			return(free(line), NULL);
 		check_buff = ft_check_buff(buff, 1);
 		if (buff[check_buff] == '\n')
 			return (line);
@@ -62,16 +64,24 @@ char	*print_line(char *line, char *buff, int *check_buff, int fd)
 {
 	*check_buff = ft_check_buff(buff, 1);
 	if (*check_buff < BUFFER_SIZE)
+	{
 		line = ft_strjoin(line, buff);
+		if (!line)
+			return(free(line), NULL);
+	}
 	else
 	{
 		while (*check_buff == BUFFER_SIZE)
 		{
 			line = ft_strjoin(line, buff);
+			if (!line)
+				return(free(line), NULL);
 			buff[read(fd, buff, BUFFER_SIZE)] = 0;
 			*check_buff = ft_check_buff(buff, 1);
 		}
 		line = ft_strjoin(line, buff);
+		if (!line)
+			return(free(line), NULL);
 	}
 	return (line);
 }
@@ -101,3 +111,22 @@ char	*ft_strjoin(char *s1, char *s2)
 	s3[i] = '\0';
 	return (free(s1), s3);
 }
+
+// #include <fcntl.h>
+// #include <stdio.h>
+
+// int	main()
+// {
+// 	int fd = open("gnl.txt", O_RDONLY);
+// //	char *str = ;
+// 	int i = 0;
+
+// 	while (i < 48)
+// 	{
+// 		printf("%s", get_next_line(fd));
+// //		free(str);
+// 		i++;
+// 	}
+// 	close(fd);
+// 	return 0;
+// }
